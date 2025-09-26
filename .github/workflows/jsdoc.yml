@@ -18,19 +18,19 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install documentation and jsdoc dependencies
-        run: npm install jsdoc documentation
+      - name: Install sdoc dependencies
+        run: npm install jsdoc
 
-      - name: Generate JSDoc (HTML) && documentation (MD)
-        run: npm run docs # jsdoc -c jsdoc.json && # documentation build src/**/*.js -f md -o DOCS.md
+      - name: Generate JSDoc (HTML)
+        run: npm run docs # jsdoc -c jsdoc.json
 
-      - name: Uninstall documentation and jsdoc dependencies
-        run: npm uninstall jsdoc documentation
+      - name: Uninstall jsdoc dependencies
+        run: npm uninstall jsdoc
 
       - name: Commit and Push docs
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/ README.md
+          git add docs/
           git commit -m "chore: update docs [skip ci]" || echo "No changes to commit"
           git push
