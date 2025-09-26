@@ -12,8 +12,5 @@
     "test": "echo \"no test created\"",
     "docs:html": "jsdoc -c jsdoc.json",
     "docs": "npm run docs:html"
-  },
-  "devDependencies": {
-    "jsdoc": "^4.0.4"
   }
 }
