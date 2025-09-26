@@ -1,0 +1,19 @@
+{
+  "name": "practice",
+  "version": "1.0.0",
+  "description": "just a practice folder for my cli",
+  "license": "ISC",
+  "author": "nikesh adhikari",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"no test created\"",
+    "docs:html": "jsdoc -c jsdoc.json",
+    "docs": "npm run docs:html"
+  },
+  "devDependencies": {
+    "jsdoc": "^4.0.4"
+  }
+}

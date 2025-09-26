@@ -1,0 +1,36 @@
+name: Generate Documentation
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install documentation and jsdoc dependencies
+        run: npm install jsdoc documentation
+
+      - name: Generate JSDoc (HTML) && documentation (MD)
+        run: npm run docs # jsdoc -c jsdoc.json && # documentation build src/**/*.js -f md -o DOCS.md
+
+      - name: Uninstall documentation and jsdoc dependencies
+        run: npm uninstall jsdoc documentation
+
+      - name: Commit and Push docs
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/ README.md
+          git commit -m "chore: update docs [skip ci]" || echo "No changes to commit"
+          git push
