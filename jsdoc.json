@@ -7,7 +7,12 @@
         "includePattern": ".js$"
     },
     "opts": {
-        "destination": "docs",
-        "recurse": true
+        "destination": "./docs",
+        "recurse": true,
+        "template": "node_modules/docdash"
+    },
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true
     }
 }

@@ -21,13 +21,10 @@ jobs:
           node-version: "20"
 
       - name: Install jsdoc dependencies
-        run: npm install jsdoc
+        run: npm install --save-dev jsdoc docdash
 
       - name: Generate JSDoc (HTML)
         run: npm run docs # jsdoc -c jsdoc.json
-
-      - name: Uninstall jsdoc dependencies
-        run: npm uninstall jsdoc
 
       - name: Commit and Push docs
         run: |
