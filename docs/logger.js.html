@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>logger.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#basicLogColors">basicLogColors</a></li><li><a href="global.html#colorPalette">colorPalette</a></li><li><a href="global.html#getStyle">getStyle</a></li><li><a href="global.html#logger">logger</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">logger.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file logger.js
+ * A lightweight logging utility for CLI output using ANSI escape codes.
+ *
+ * Features:
+ * - Provides styled console logs with color + intensity.
+ * - Supports predefined "basic log types" (info, success, error, etc.).
+ * - Supports custom styles like `"red.intense"` or `"blue.dim"`.
+ */
+
+/**
+ * Intensity levels for colors.
+ * @typedef {"dim" | "normal" | "intense"} Intensity
+ */
+
+/**
+ * ANSI escape codes grouped by color and intensity.
+ *
+ * @type {Object&lt;string, Record&lt;Intensity, string>>}
+ */
+const colorPalette = {
+    black: {
+        dim: "\x1b[90m%s\x1b[0m",
+        normal: "\x1b[30m%s\x1b[0m",
+        intense: "\x1b[30;1m%s\x1b[0m"
+    },
+    red: {
+        dim: "\x1b[31m%s\x1b[0m",
+        normal: "\x1b[31;22m%s\x1b[0m",
+        intense: "\x1b[31;1m%s\x1b[0m"
+    },
+    green: {
+        dim: "\x1b[32m%s\x1b[0m",
+        normal: "\x1b[32;22m%s\x1b[0m",
+        intense: "\x1b[32;1m%s\x1b[0m"
+    },
+    yellow: {
+        dim: "\x1b[33m%s\x1b[0m",
+        normal: "\x1b[33;22m%s\x1b[0m",
+        intense: "\x1b[33;1m%s\x1b[0m"
+    },
+    blue: {
+        dim: "\x1b[34m%s\x1b[0m",
+        normal: "\x1b[34;22m%s\x1b[0m",
+        intense: "\x1b[34;1m%s\x1b[0m"
+    },
+    magenta: {
+        dim: "\x1b[35m%s\x1b[0m",
+        normal: "\x1b[35;22m%s\x1b[0m",
+        intense: "\x1b[35;1m%s\x1b[0m"
+    },
+    cyan: {
+        dim: "\x1b[36m%s\x1b[0m",
+        normal: "\x1b[36;22m%s\x1b[0m",
+        intense: "\x1b[36;1m%s\x1b[0m"
+    },
+    white: {
+        dim: "\x1b[37m%s\x1b[0m",
+        normal: "\x1b[37;22m%s\x1b[0m",
+        intense: "\x1b[37;1m%s\x1b[0m"
+    }
+};
+
+/**
+ * Predefined semantic log styles.
+ *
+ * @type {Object&lt;string, string>}
+ * @property {string} info - White (normal)
+ * @property {string} success - Green (intense)
+ * @property {string} error - Red (intense)
+ * @property {string} response - Blue (normal)
+ * @property {string} warn - Yellow (normal)
+ * @property {string} debug - Black (dim/gray)
+ */
+const basicLogColors = {
+    info: colorPalette.white.normal,
+    success: colorPalette.green.intense,
+    error: colorPalette.red.intense,
+    response: colorPalette.blue.normal,
+    warn: colorPalette.yellow.normal,
+    debug: colorPalette.black.dim
+};
+
+/**
+ * Resolve a custom color style string like `"red.intense"`.
+ *
+ * @param {string} logColorStyle - Style string in format `"color.intensity"`.
+ * @returns {string} ANSI escape code for the matching color/intensity.
+ *
+ * @example
+ * getStyle("blue.dim"); // → "\x1b[34m%s\x1b[0m"
+ */
+function getStyle(logColorStyle) {
+    const [color, intensity] = logColorStyle.split(".");
+    return colorPalette[color]?.[intensity] || colorPalette.white.normal;
+}
+
+/**
+ * Log a styled message to the console.
+ *
+ * @param {string} logColorStyle - Either:
+ *   - A predefined log type (`info`, `success`, `error`, `warn`, `response`, `debug`), or
+ *   - A custom style in `"color.intensity"` format (e.g., `"blue.dim"`).
+ * @param {string} logText - The message to display.
+ * @returns {void}
+ *
+ * @example
+ * logger("success", "Data saved successfully!");
+ * logger("yellow.dim", "This is a warning in dim yellow.");
+ */
+function logger(logColorStyle, logText) {
+    if (!logText) {
+        console.log(colorPalette.red.intense, "Text or style is missing.");
+        return;
+    }
+
+    let style = colorPalette.white.normal;
+    if (logColorStyle.includes(".")) {
+        style = getStyle(logColorStyle);
+    } else {
+        style = basicLogColors[logColorStyle];
+    }
+
+    console.log(style, logText);
+}
+
+module.exports = logger;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Fri Sep 26 2025 15:32:47 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
